@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "348524834868",
+    "project_id": "bride-magazine-arabia",
+    "storage_bucket": "bride-magazine-arabia.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:348524834868:android:a5914b2e667d9eb8649a61",
+        "android_client_info": {
+          "package_name": "com.bma.arabia"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBSgnYCasceRh0BKBHWQCuRzeeuAJeISqc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
