@@ -8,16 +8,9 @@ workflows:
       app_store_connect: Codemagic
 
     environment:
-  groups:
-    - firebase
+      groups:
+        - firebase
 
-  flutter: stable
-  xcode: latest
-  cocoapods: default
-
-  ios_signing:
-    distribution_type: app_store
-    bundle_identifier: com.bma.arabia
       flutter: stable
       xcode: latest
       cocoapods: default
@@ -32,8 +25,8 @@ workflows:
           flutter pub get
 
       - name: Restore Firebase iOS config
-      script: |
-      echo "$IOS_FIREBASE_PLIST_B64" | base64 --decode > ios/Runner/GoogleService-Info.plist
+        script: |
+          echo "$IOS_FIREBASE_PLIST_B64" | base64 --decode > ios/Runner/GoogleService-Info.plist
 
       - name: Install iOS pods
         script: |
