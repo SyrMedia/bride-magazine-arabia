@@ -19,26 +19,36 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // ✅ 1. تفعيل وضع Edge-to-Edge (العرض حتى الحافة)
-  await SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
+  await SystemChrome.setEnabledSystemUIMode(
+    SystemUiMode.manual,
+    overlays: SystemUiOverlay.values,
+  );
 
-  // ✅ 2. جعل أشرطة النظام شفافة
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-    statusBarColor: Colors.transparent, // شريط الحالة شفاف
-    systemNavigationBarColor: Colors.transparent, // شريط التنقل السفلي شفاف
-    statusBarIconBrightness: Brightness.dark, // أيقونات داكنة (يمكنك تغييرها حسب ذوقك)
+    statusBarColor: Colors.transparent,
+    systemNavigationBarColor: Colors.transparent,
+    statusBarIconBrightness: Brightness.dark,
     systemNavigationBarIconBrightness: Brightness.dark,
   ));
 
-  await Firebase.initializeApp();
-  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
-  await _setupFCM();
-
-  await Hive.initFlutter();
-  await AppCache.init();
-  await Hive.openBox('toolsBox');
-
   runApp(const ProviderScope(child: BmaApp()));
+
+  Future.microtask(() async {
+    try {
+      await Firebase.initializeApp();
+      FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+      await _setupFCM();
+
+      await Hive.initFlutter();
+      await AppCache.init();
+      await Hive.openBox('toolsBox');
+
+      debugPrint('✅ App services initialized');
+    } catch (e, st) {
+      debugPrint('❌ App init error: $e');
+      debugPrint('$st');
+    }
+  });
 }
 
 Future<void> _setupFCM() async {
