@@ -20,7 +20,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // ✅ 1. تفعيل وضع Edge-to-Edge (العرض حتى الحافة)
-  await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+  await SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
 
   // ✅ 2. جعل أشرطة النظام شفافة
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(

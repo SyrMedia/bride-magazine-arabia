@@ -10,8 +10,11 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
-  late final AnimationController _c =
-  AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
+  late final AnimationController _c = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 600),
+  );
+
   late final Animation<double> _fade =
   CurvedAnimation(parent: _c, curve: Curves.easeOut);
 
@@ -19,7 +22,8 @@ class _SplashScreenState extends State<SplashScreen>
   void initState() {
     super.initState();
     _c.forward();
-    Future.delayed(const Duration(milliseconds: 900), () {
+
+    Future.delayed(const Duration(milliseconds: 1200), () {
       if (!mounted) return;
       context.go('/tabs/shop');
     });
@@ -34,19 +38,19 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       body: FadeTransition(
         opacity: _fade,
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            Image.asset(
-              'assets/splash/splash_full.png', // تأكد أنها موجودة ومعلنة بـ pubspec.yaml
-              fit: BoxFit.cover,
+        child: SafeArea(
+          child: Center(
+            child: Image.asset(
+              'assets/splash/splash_full.png',
+              width: MediaQuery.of(context).size.width * 0.72,
+              fit: BoxFit.contain,
             ),
-          ],
+          ),
         ),
       ),
-      backgroundColor: Colors.black,
     );
   }
 }
