@@ -79,6 +79,16 @@ class _ServicesScreenState extends State<ServicesScreen> {
     }
   }
 
+
+  Future<void> _openInApp(String url) async {
+    final uri = Uri.parse(url);
+    if (!await launchUrl(uri, mode: LaunchMode.inAppBrowserView)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('تعذّر فتح الرابط: $url')),
+      );
+    }
+  }
+
   Widget _contactTile({
     required IconData icon,
     required String label,
@@ -203,7 +213,7 @@ class _ServicesScreenState extends State<ServicesScreen> {
             icon: Icons.language,
             label: 'الموقع الإلكتروني',
             value: 'bma-events.com',
-            onTap: () => _openUrl(_websiteUrl),
+            onTap: () => _openInApp(_websiteUrl),
           ),
           _contactTile(
             icon: Icons.email,

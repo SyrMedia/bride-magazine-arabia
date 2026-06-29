@@ -23,8 +23,12 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
   static final Uri _privacyUrl  = Uri.parse('https://bma-events.com/privacy-policy');
   static final String _deletionBase = 'https://bma-events.com/account-deletion-request/';
 
-  Future<void> _openExternal(Uri uri) async {
-    final ok = await launchUrl(uri, mode: LaunchMode.externalApplication);
+  Future<void> _openInApp(Uri uri) async {
+    final ok = await launchUrl(
+      uri,
+      mode: LaunchMode.inAppBrowserView,
+    );
+
     if (!ok && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('تعذّر فتح الرابط')),
@@ -38,7 +42,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
       if (auth.isAuthed) 'uid': '${auth.user!.id}',
       if (auth.isAuthed && (auth.user!.email).isNotEmpty) 'email': auth.user!.email,
     });
-    await _openExternal(uri);
+    await _openInApp(uri);
   }
 
   @override
@@ -63,8 +67,8 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
           onOpenOrders: (id) => Navigator.of(context).push(
             MaterialPageRoute(builder: (_) => OrdersScreen(customerId: id)),
           ),
-          onOpenRegister: () => _openExternal(_registerUrl),
-          onOpenPrivacy: () => _openExternal(_privacyUrl),
+          onOpenRegister: () => _openInApp(_registerUrl),
+          onOpenPrivacy: () => _openInApp(_privacyUrl),
           onOpenDeletion: _openDeletion,
         )
             : Form(
@@ -129,11 +133,11 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
 
               // إنشاء حساب → صفحة التسجيل مباشرة
               OutlinedButton(
-                onPressed: () => _openExternal(_registerUrl),
-                child: const Text('إنشاء حساب من الموقع'),
+                onPressed: () => _openInApp(_registerUrl),
+                child: const Text('إنشاء حساب'),
               ),
               TextButton(
-                onPressed: () => _openExternal(_resetUrl),
+                onPressed: () => _openInApp(_resetUrl),
                 child: const Text('نسيت كلمة المرور؟'),
               ),
 
@@ -145,7 +149,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                 title: const Text('سياسة الخصوصية'),
                 subtitle: const Text('اطّلع على كيفية جمع البيانات واستخدامها'),
                 trailing: const Icon(Icons.open_in_new),
-                onTap: () => _openExternal(_privacyUrl),
+                onTap: () => _openInApp(_privacyUrl),
               ),
 
               // حذف البيانات والحساب (حتى لو مو مسجّل، يفتح الصفحة)
