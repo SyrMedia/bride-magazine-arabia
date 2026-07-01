@@ -79,7 +79,12 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
             _field('الاسم', _first),
             _field('الكنية', _last),
             _field('الهاتف', _phone, keyboard: TextInputType.phone),
-            _field('الإيميل (اختياري)', _email, keyboard: TextInputType.emailAddress, required: false),
+            _field(
+              'الإيميل',
+              _email,
+              keyboard: TextInputType.emailAddress,
+              helperText: 'استخدمي نفس الإيميل المستخدم في تسجيل الحساب لعرض طلباتك لاحقاً',
+            ),
             _field('العنوان', _address),
             _field('المدينة', _city),
 
@@ -132,9 +137,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                       firstName: _first.text.trim(),
                       lastName: _last.text.trim(),
                       phone: _phone.text.trim(),
-                      email: _email.text.trim().isEmpty
-                          ? 'guest@example.com'
-                          : _email.text.trim(),
+                      email: _email.text.trim(),
                       address1: _address.text.trim(),
                       city: _city.text.trim(),
                       items: cart.items,
@@ -166,17 +169,35 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
     );
   }
 
-  Widget _field(String label, TextEditingController c,
-      {TextInputType? keyboard, bool required = true}) {
+  Widget _field(
+      String label,
+      TextEditingController c, {
+        TextInputType? keyboard,
+        bool required = true,
+        String? helperText,
+      }) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: TextFormField(
         controller: c,
         keyboardType: keyboard,
-        decoration: InputDecoration(labelText: label, border: const OutlineInputBorder()),
+        decoration: InputDecoration(
+          labelText: label,
+          helperText: helperText,
+          border: const OutlineInputBorder(),
+        ),
         validator: (v) {
-          if (!required) return null;
-          return (v == null || v.trim().isEmpty) ? 'مطلوب' : null;
+          final value = v?.trim() ?? '';
+
+          if (required && value.isEmpty) return 'مطلوب';
+
+          if (keyboard == TextInputType.emailAddress && value.isNotEmpty) {
+            if (!value.contains('@') || !value.contains('.')) {
+              return 'الإيميل غير صحيح';
+            }
+          }
+
+          return null;
         },
       ),
     );

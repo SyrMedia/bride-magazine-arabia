@@ -6,7 +6,13 @@ import 'order_details_screen.dart';
 
 class OrdersScreen extends ConsumerWidget {
   final int customerId;
-  const OrdersScreen({super.key, required this.customerId});
+  final String customerEmail;
+
+  const OrdersScreen({
+    super.key,
+    required this.customerId,
+    required this.customerEmail,
+  });
 
   String _statusLabel(String s) {
     switch (s) {
@@ -36,19 +42,20 @@ class OrdersScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('طلباتي')),
       body: FutureBuilder<List<Map<String, dynamic>>>(
-        // “صارمة”: نعرض الطلبات المرتبطة بالحساب فقط
-        future: repo.getOrdersSmart(customerId: customerId, fallbackEmail: null),
+        future: repo.getRecentOrdersFilteredByEmail(customerEmail),
         builder: (context, snap) {
           if (snap.connectionState != ConnectionState.done) {
             return const Center(child: CircularProgressIndicator());
           }
+
           if (snap.hasError) {
             return Center(child: Text('خطأ: ${snap.error}'));
           }
 
           final items = snap.data ?? [];
+
           if (items.isEmpty) {
-            return const Center(child: Text('لا توجد طلبات'));
+            return const Center(child: Text('لا توجد طلبات لهذا الحساب'));
           }
 
           return ListView.separated(
@@ -59,15 +66,12 @@ class OrdersScreen extends ConsumerWidget {
               final int id = (o['id'] as num).toInt();
               final total = o['total']?.toString() ?? '';
               final status = o['status']?.toString() ?? '';
-              final created =
-              DateTime.tryParse(o['date_created']?.toString() ?? '');
+              final created = DateTime.tryParse(o['date_created']?.toString() ?? '');
 
               return ListTile(
                 leading: CircleAvatar(child: Text('#$id'.substring(0, 2))),
                 title: Text('طلب #$id • ${_statusLabel(status)}'),
-                subtitle: Text(
-                  created != null ? created.toLocal().toString() : '',
-                ),
+                subtitle: Text(created != null ? created.toLocal().toString() : ''),
                 trailing: Text(total),
                 onTap: () {
                   Navigator.of(context).push(

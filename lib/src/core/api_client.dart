@@ -6,14 +6,14 @@ class ApiClient {
   /// للطلبات العامة (المجلة، المتجر store/v1، إلخ)
   final Dio base;
 
-  /// لطلبات WooCommerce المحمية (wc/v3) – للطلبات مثلاً
+  /// لطلبات WooCommerce المحمية (wc/v3)
   final Dio wc;
 
   ApiClient()
       : base = Dio(
     BaseOptions(
       baseUrl: 'https://bma-events.com',
-      connectTimeout: const Duration(seconds: 60), // ⬅ زدناها
+      connectTimeout: const Duration(seconds: 60),
       receiveTimeout: const Duration(seconds: 60),
       responseType: ResponseType.json,
       followRedirects: true,
@@ -34,16 +34,15 @@ class ApiClient {
             },
           ),
         ) {
-    // 🔐 لو عندك مفاتيح WooCommerce (consumer_key / consumer_secret)
-    // فيك تزود هالجزء أو تعدله حسب شغلك السابق:
+    // 🔐 WooCommerce Auth FIX (حل 401)
     wc.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) {
-          // حط مفاتيحك هون لو كنت تستخدم query params:
-          // options.queryParameters.addAll({
-          //   'consumer_key': 'ck_xxx',
-          //   'consumer_secret': 'cs_xxx',
-          // });
+          options.queryParameters.addAll({
+            'consumer_key': 'ck_525eb5090e728073b07a13ddee67426d541b0e21',
+            'consumer_secret': 'cs_8d00dcabcfc590cc57a15c7ad381d4639ef08693',
+          });
+
           debugPrint('🌐 [WC REQ] ${options.method} ${options.uri}');
           return handler.next(options);
         },
@@ -60,7 +59,7 @@ class ApiClient {
       ),
     );
 
-    // نفس الفكرة للـ base client
+    // base logging
     base.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) {

@@ -53,7 +53,14 @@ class OrdersRepository {
     };
 
     final res = await client.post('/orders', data: payload);
-    return res.data['id'] as int;
+    final data = res.data;
+
+    if (data is Map) {
+      final id = data['id'] ?? data['order_id'];
+      return int.parse(id.toString());
+    }
+
+    throw Exception('Invalid order response: ${data.runtimeType}');
   }
 
   /// طلب مفرد لتفاصيل الطلب
